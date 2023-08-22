@@ -59,3 +59,6 @@ body {
   grid-template-columns: 1fr;
   gap: 14px;
 }
+h5{
+  display: none;
+}
