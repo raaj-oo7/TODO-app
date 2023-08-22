@@ -27,6 +27,13 @@ const formValidation = () => {
 };
 
 let data = [];
+function updateStatus() {
+  if (data.length === 0) {
+    taskTitle.style.display = "none";
+  } else {
+    taskTitle.style.display = "block";
+  }
+}
 
 let acceptData = () => {
   data.push({
@@ -58,6 +65,7 @@ let createTasks = () => {
     `);
   });
   resetForm();
+  updateStatus();
 };
 
 const deleteTask = (e) => {
@@ -65,6 +73,7 @@ const deleteTask = (e) => {
   data.splice(e.parentElement.parentElement.id, 1);
   localStorage.setItem("data", JSON.stringify(data));
   console.log(data);
+  updateStatus();
 };
 const editTask = (e) => {
   let selectedTask = e.parentElement.parentElement;
