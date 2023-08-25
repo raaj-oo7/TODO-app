@@ -19,6 +19,15 @@ const taskTitle = document.getElementById('task-title');
 const taskData = [];
 
 // functions
+
+addActionModal.addEventListener('shown.bs.modal', function () {
+  addTitleInput.focus()
+})
+
+editActionModal.addEventListener('shown.bs.modal', function () {
+  editTitleInput.focus()
+})
+
 const handleDeleteTask = (uniqueId) => {
   // remove task from DOM
   const task = document.getElementById(uniqueId);
@@ -41,16 +50,29 @@ const handleEditTask = (uniqueId) => {
   const date = editDateInput.value;
   const description = editDescriptionInput.value;
 
+  if (title.trim() === '') {
+    editModalErrorMessage.innerHTML = "Title can't be blank";
+  } else {
+    // empty error message
+    editModalErrorMessage.innerHTML = ''
+  }
+  
   // update taskData array
-  const index = uniqueId.split('-')[1];
-  taskData[index] = {
-    title,
-    date,
-    description,
-  };
+  ''
+  const index = +uniqueId.split('-')[1];
+  const updatedTaskData = taskData.map((t, i) => {
+    if (index === i) {
+      return {
+        title,
+        date,
+        description,
+      }
+    }
+    return t;
+  });
 
   // save data to localStorage
-  handleAddTaskToDOM();
+  handleAddTaskToDOM(updatedTaskData);
 
   // toggle task status
   toggleTaskStatus();
@@ -91,9 +113,11 @@ const handleOpenEditFormModal = (uniqueId) => {
   myModal.show();
 };
 
-const handleAddTaskToDOM = () => {
+
+const handleAddTaskToDOM = (updatedTaskData) => {
   tasks.innerHTML = '';
-  taskData.map((task, index) => {
+  console.log(updatedTaskData);
+  updatedTaskData.map((task, index) => {
     const uniqueId = `task-${index}`;
     const taskEl = document.createElement('div');
     taskEl.setAttribute('id', uniqueId);
@@ -204,7 +228,7 @@ const handleAddNewTask = () => {
     localStorage.setItem('taskData', JSON.stringify(taskData));
 
     // add task to DOM
-    handleAddTaskToDOM();
+    handleAddTaskToDOM(taskData);
 
     // toggle task status
     toggleTaskStatus();
@@ -229,9 +253,9 @@ const initApp = () => {
   const data = localStorage.getItem('taskData');
   if (data) {
     taskData.push(...JSON.parse(data));
-    handleAddTaskToDOM();
+    handleAddTaskToDOM(taskData);
     toggleTaskStatus();
   }
 };
 
-initApp();
+document.addEventListener('DOMContentLoaded', initApp)
